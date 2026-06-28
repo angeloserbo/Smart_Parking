@@ -1,7 +1,8 @@
 FROM php:8.2-apache
 
-# Inaayos nito ang nag-aaway na Apache modules (MPM error)
-RUN a2dismod mpm_event mpm_worker mpm_prefork || true && \
+# Remove all MPM module files from both mods-available and mods-enabled,
+# then enable only mpm_prefork to prevent "More than one MPM loaded" error
+RUN rm -f /etc/apache2/mods-available/mpm_*.load /etc/apache2/mods-available/mpm_*.conf && \
     rm -f /etc/apache2/mods-enabled/mpm_*.load /etc/apache2/mods-enabled/mpm_*.conf && \
     a2enmod mpm_prefork rewrite
 
